@@ -4,28 +4,25 @@ buildscript {
     }
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
 
     dependencies {
-        // Matches recent template from React Native (0.60)
-        // https://github.com/facebook/react-native/blob/0.60-stable/template/android/build.gradle#L16
-        classpath("com.android.tools.build:gradle:${safeExtGet('gradlePluginVersion', '3.4.1')}")
+        // Updated for React Native 0.72+ compatibility
+        classpath("com.android.tools.build:gradle:${safeExtGet('gradlePluginVersion', '7.4.2')}")
     }
 }
 
-plugins {
-  id('com.android.library')
-  id('maven-publish')
-}
+apply plugin: 'com.android.library'
+apply plugin: 'maven-publish'
 
 
-// Matches values in recent template from React Native (0.59)
-// https://github.com/facebook/react-native/blob/0.59-stable/template/android/build.gradle#L5-L9
-def DEFAULT_COMPILE_SDK_VERSION = 28
-def DEFAULT_BUILD_TOOLS_VERSION = "28.0.3"
-def DEFAULT_MIN_SDK_VERSION = 16
-def DEFAULT_TARGET_SDK_VERSION = 28
+// Matches values for React Native 0.72+
+// Updated for modern Android development
+def DEFAULT_COMPILE_SDK_VERSION = 34
+def DEFAULT_BUILD_TOOLS_VERSION = "33.0.0"
+def DEFAULT_MIN_SDK_VERSION = 21
+def DEFAULT_TARGET_SDK_VERSION = 34
 
 android {
   compileSdkVersion safeExtGet('compileSdkVersion', DEFAULT_COMPILE_SDK_VERSION)
@@ -45,11 +42,11 @@ android {
 repositories {
     maven {
         // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
-        // Matches recent template from React Native (0.59)
-        // https://github.com/facebook/react-native/blob/0.59-stable/template/android/build.gradle#L30
+        // Updated for React Native 0.72+
         url "$projectDir/../node_modules/react-native/android"
     }
     mavenCentral()
+    google()
 }
 
 dependencies {
@@ -89,17 +86,17 @@ afterEvaluate { project ->
     task androidJavadoc(type: Javadoc) {
         source = android.sourceSets.main.java.srcDirs
         classpath += files(android.bootClasspath)
-        classpath += files(project.getConfigurations().getByName('compile').asList())
+        classpath += files(project.getConfigurations().getByName('implementation').asList())
         include '**/*.java'
     }
 
     task androidJavadocJar(type: Jar, dependsOn: androidJavadoc) {
-      archiveClassifier = 'javadoc'
+        archiveClassifier.set('javadoc')
         from androidJavadoc.destinationDir
     }
 
     task androidSourcesJar(type: Jar) {
-      archiveClassifier = 'sources'
+        archiveClassifier.set('sources')
         from android.sourceSets.main.java.srcDirs
         include '**/*.java'
     }
