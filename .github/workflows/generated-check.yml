@@ -1,0 +1,22 @@
+name: generated-check
+
+on:
+  pull_request:
+
+jobs:
+  generated-check:
+    name: generated-check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Install
+        run: npm ci --progress=false
+      - name: Generate icons
+        run: npm run generate
+      - name: Fail on stale generated files
+        run: |
+          git add -N .
+          git diff --exit-code --stat -- icons index.js fonts android/src/main/assets

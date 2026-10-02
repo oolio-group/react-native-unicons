@@ -17,6 +17,8 @@ Pod::Spec.new do |s|
   s.source       = { :git => "https://github.com/Iconscout/react-native-unicons.git", :tag => "#{s.version}" }
 
   s.source_files = "ios/**/*.{h,m,swift}"
+  s.resources = "fonts/*.ttf"
+  s.frameworks = "CoreText"
   s.requires_arc = true
 
   s.dependency "React"

@@ -1,14 +1,24 @@
 #import "Unicons.h"
-
+#import <CoreText/CoreText.h>
 
 @implementation Unicons
 
 RCT_EXPORT_MODULE()
 
-RCT_EXPORT_METHOD(sampleMethod:(NSString *)stringArgument numberParameter:(nonnull NSNumber *)numberArgument callback:(RCTResponseSenderBlock)callback)
++ (void)load
 {
-    // TODO: Implement some actually useful functionality
-	callback(@[[NSString stringWithFormat: @"numberArgument: %@ stringArgument: %@", numberArgument, stringArgument]]);
+    NSURL *fontURL = [[NSBundle bundleForClass:self] URLForResource:@"unicons-line" withExtension:@"ttf"];
+    if (!fontURL) {
+        fontURL = [[NSBundle mainBundle] URLForResource:@"unicons-line" withExtension:@"ttf"];
+    }
+    if (fontURL) {
+        CTFontManagerRegisterFontsForURL((__bridge CFURLRef)fontURL, kCTFontManagerScopeProcess, NULL);
+    }
+}
+
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
 }
 
 @end
