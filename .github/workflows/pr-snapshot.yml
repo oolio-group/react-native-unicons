@@ -1,0 +1,50 @@
+name: PR Snapshot Release
+
+on:
+  pull_request:
+
+concurrency:
+  group: pr-snapshot-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  snapshot:
+    name: npm Snapshot Release
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      pull-requests: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          registry-url: "https://npm.pkg.github.com"
+          scope: "@oolio-group"
+
+      - name: Download & Build Icons
+        run: npm ci --progress=false && npm run generate
+
+      - name: Set snapshot version
+        id: version
+        run: |
+          VERSION="0.0.0-$(date +%s)"
+          npm version --no-git-tag-version "$VERSION"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Publish npm snapshot under snapshot dist-tag
+        run: npm publish --tag snapshot
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Comment snapshot version on PR
+        run: |
+          gh pr comment ${{ github.event.pull_request.number }} --repo ${{ github.repository }} --body "📦 Snapshot release published: \`${{ steps.version.outputs.version }}\`
+
+          - **npm**: \`\"@oolio-group/react-native-unicons\": \"${{ steps.version.outputs.version }}\"\`"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
