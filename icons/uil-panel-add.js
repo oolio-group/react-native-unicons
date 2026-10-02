@@ -1,27 +1,3 @@
-import React from "react";
-import Svg, { Path } from "react-native-svg";
-import PropTypes from "prop-types";
+import createIcon from "../createIcon";
 
-const UilPanelAdd = props => {
-  const { color = "currentColor", size = "24", ...otherProps } = props;
-  return (
-    <Svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill={color}
-      {...otherProps}
-    >
-      <Path d="M18 10h-4V3a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v5H3a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h15a1 1 0 0 0 1-1V11a1 1 0 0 0-1-1ZM7 20H4V10h3Zm5 0H9V4h3Zm5 0h-3v-8h3Zm4-16h-1V3a1 1 0 0 0-2 0v1h-1a1 1 0 0 0 0 2h1v1a1 1 0 0 0 2 0V6h1a1 1 0 0 0 0-2Z" />
-    </Svg>
-  );
-};
-
-UilPanelAdd.propTypes = {
-  color: PropTypes.string,
-  size: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-};
-
-
-
-export default UilPanelAdd;
+export default createIcon("\u{ec4f}", "UilPanelAdd");
